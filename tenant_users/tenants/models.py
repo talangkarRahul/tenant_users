@@ -200,7 +200,7 @@ class TenantBase(TenantMixin):
 
 
 class UserProfileManager(BaseUserManager):
-    def _create_user(self, email, password,mobile,is_staff, is_superuser, is_verified, **extra_fields):
+    def _create_user(self, email, password, mobile, name, is_staff, is_superuser, is_verified, **extra_fields):
         # Do some schema validation to protect against calling create user from inside
         # a tenant. Must create public tenant permissions during user creation. This
         # happens during assign role. This function cannot be used until a public
@@ -239,6 +239,7 @@ class UserProfileManager(BaseUserManager):
         profile.is_verified = is_verified
         profile.set_password(password)
         profile.mobile = mobile
+        profile.name = name
         profile.save()
 
         # Get public tenant tenant and link the user (no perms)
@@ -257,11 +258,11 @@ class UserProfileManager(BaseUserManager):
 
         return profile
 
-    def create_user(self, email=None, password=None,mobile=None, is_staff=False, **extra_fields):
-        return self._create_user(email, password, mobile,is_staff, False, False, **extra_fields)
+    def create_user(self, email=None, password=None,mobile=None, name=None, is_staff=False, **extra_fields):
+        return self._create_user(email, password, mobile, name, is_staff, False, False, **extra_fields)
 
-    def create_superuser(self, password, email=None,mobile=None, **extra_fields):
-        return self._create_user(email, password,mobile, True, True, True, **extra_fields)
+    def create_superuser(self, password, email=None,mobile=None, name=None, **extra_fields):
+        return self._create_user(email, password, mobile, name, True, True, True, **extra_fields)
 
     def delete_user(self, user_obj):
         if not user_obj.is_active:
