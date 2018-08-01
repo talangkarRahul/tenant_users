@@ -7,7 +7,7 @@ from ..compat import get_tenant_model, TENANT_SCHEMAS, get_tenant_domain_model
 from .models import InactiveError, ExistsError
 
 
-def provision_tenant(tenant_name, tenant_slug, user_email, is_staff=False):
+def provision_tenant(tenant_name, tenant_slug, user_email, university_id, is_staff=False):
     """
     Create a tenant with default roles and permissions
 
@@ -51,12 +51,14 @@ def provision_tenant(tenant_name, tenant_slug, user_email, is_staff=False):
                 domain_url=tenant_domain,
                 schema_name=schema_name,
                 owner=user,
+                university_id=university_id
             )
 
         else:  # django-tenants
             tenant = TenantModel.objects.create(name=tenant_name,
                                                 slug=tenant_slug,
                                                 schema_name=schema_name,
+                                                university_id=university_id,
                                                 owner=user)
 
             # Add one or more domains for the tenant
